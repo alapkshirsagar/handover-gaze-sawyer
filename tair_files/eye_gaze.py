@@ -1,79 +1,67 @@
 #!/usr/bin/env python
 
-# Copyright (c) 2013-2018, Rethink Robotics Inc.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+"""A program to perform gaze movements with Sawyer Robot"""
 
-import intera_interface
-import argparse
+from intera_interface import HeadDisplay
 import rospy
 
-def main():
-    """RSDK Head Display Example:
 
-    Displays a given image file or multiple files on the robot's face.
-
-    Pass the relative or absolute file path to an image file on your
-    computer, and the example will read and convert the image using
-    cv_bridge, sending it to the screen as a standard ROS Image Message.
-    """
-    epilog = """
+epilog = """
 Notes:
     Max screen resolution is 1024x600.
     Images are always aligned to the top-left corner.
     Image formats are those supported by OpenCv - LoadImage().
     """
-    # arg_fmt = argparse.RawDescriptionHelpFormatter
-    # parser = argparse.ArgumentParser(formatter_class=arg_fmt,
-    #                                  description=main.__doc__,
-    #                                  epilog=epilog)
-    # required = parser.add_argument_group('required arguments')
-    # required.add_argument(
-    #     '-f', '--file', nargs='+',
-    #     help='Path to image file to send. Multiple files are separated by a space, eg.: a.png b.png'
-    # )
-    # parser.add_argument(
-    #     '-l', '--loop', action="store_true",
-    #     help='Display images in loop, add argument will display images in loop'
-    # )
-    # parser.add_argument(
-    #     '-r', '--rate', type=float, default=1.0,
-    #     help='Image display frequency for multiple and looped images.'
-    # )
-    # args = parser.parse_args()
 
-    rospy.init_node("head_display_example", anonymous=True, disable_signals = True)
+class SawyerGazeController:
 
-    head_display = intera_interface.HeadDisplay()
-    # image="/home/sawyer/tair_catkin_ws/src/eyes/Untitled-"
-    # multiple_images = ""
-    # for i in range(0,2):
-    #     try:
-    #         #rospy.sleep(0.1);
-    #         multiple_images= multiple_images + "/home/sawyer/tair_catkin_ws/src/eyes/Untitled-" + str(i + 20001) + ".jpg "
-    #
-    #     except KeyboardInterrupt:
-    #         break
-    # multiple_images=multiple_images+ "/home/sawyer/tair_catkin_ws/src/eyes/Untitled-" + str(20298) + ".jpg"
-    # print(multiple_images);
-    # images = ['/home/sawyer/tair_catkin_ws/src/eyes/Untitled-20001.jpg', '/home/sawyer/tair_catkin_ws/src/eyes/Untitled-20295.jpg']
-    images =[]
-    for i in range(0,299):
-         path = "/home/sawyer/tair_catkin_ws/src/eyes_new/Untitled-" + str(i + 10001) + ".jpg"
-         images.append(path)
+    def __init__(self):
+        # #########################Fields#####################################
+        self.head_display = HeadDisplay()
+        self.eyegaze_files_location = "/home/sawyer/tair_catkin_ws/src/tair_files/eyes_new/Untitled-"
 
-    print(images)
-    head_display.display_image(images, True, 30)
+        # ################### Publishers ####################################
+
+        # ################### Actions ######################################
+
+        # ################### Services ####################################
+
+        # ################## Startup Procedure ############################
+
+    # ################### Action Clients ###################################
+    # def actionClient():
+
+    # ################### Service Clients ##################################
+    # def ServiceClient():
+
+    # ################### Callback Functions ###############################
+
+    # ################### Methods ###########################################
+
+    def face_hand_transition_gaze(self):
+        images = []
+        for i in range(60, 299):
+            path = self.eyegaze_files_location + str(i + 10001) + ".jpg"
+            images.append(path)
+        # print(images)
+        self.head_display.display_image(images, True, 30)
+
+    def face_gaze(self):
+        path = self.eyegaze_files_location + str(10001) + ".jpg"
+        self.head_display.display_image(path, True, 30)
+
+    def hand_gaze(self):
+        path = self.eyegaze_files_location + str(10299) + ".jpg"
+        self.head_display.display_image(path, True, 30)
+
 
 if __name__ == '__main__':
-    main()
+    # Initialize node
+    rospy.init_node("head_display", anonymous=True, disable_signals=True)
+
+    try:
+        brain = SawyerGazeController()
+        brain.face_hand_transition_gaze()
+
+    except rospy.ROSInterruptException:
+        pass
