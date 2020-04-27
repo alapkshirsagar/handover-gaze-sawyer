@@ -6,7 +6,7 @@ import multiprocessing
 from libezgripper import create_connection, Gripper
 import socket
 import time
-from std_msgs.msg import Int32
+from std_msgs.msg import Int32, String
 from intera_interface import Limb, HeadDisplay, Head
 from intera_motion_msgs.msg import TrajectoryOptions
 from intera_motion_interface import (
@@ -16,7 +16,7 @@ from intera_motion_interface import (
 )
 from geometry_msgs.msg import PoseStamped
 import numpy as np
-
+import time
 
 # Class to control Sawyer robot
 
@@ -52,6 +52,8 @@ class SawyerHandoverController:
 
         # Topic for getting end effector state
         # ################### Publishers ####################################
+        # Topic for publishing completion of phases
+        self.handover_phase_status_publisher = rospy.Publisher('/handover_phase_status', String, queue_size =10)
 
         # ################### Actions ######################################
 
@@ -89,6 +91,7 @@ class SawyerHandoverController:
 
     def perform_handover(self):
         # Go to home position
+        self.handover_phase_status_publisher.publish("home")
         self.go_to_cartesian_pose(self.home_position)
         # self.go_to_cartesian_pose(self.waypoint_handover)
         # self.go_to_cartesian_pose(self.home_position)
@@ -99,6 +102,7 @@ class SawyerHandoverController:
         # self.handGaze()
 
         # Go to handover location
+        self.handover_phase_status_publisher.publish("reach")
         while self.range_sensor_reading > self.range_sensor_threshold:
             print(self.range_sensor_reading)
             # print("not here")
@@ -123,11 +127,14 @@ class SawyerHandoverController:
         while self.toggle_sensor_reading is 0:
             rospy.sleep(0.1)
         else:
+            self.handover_phase_status_publisher.publish("transfer")
             self.close_gripper()
 
         # Go to home position
+        self.handover_phase_status_publisher.publish("retreat")
         self.go_to_cartesian_pose(self.home_position)
         rospy.sleep(2.0)
+
 
         # Open Gripper
         self.open_gripper()
