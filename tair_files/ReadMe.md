@@ -8,7 +8,7 @@ Terminal 3:
 python src/tair_files/fixed_head.py
 
 Terminal 4:
-python src/tair_files/eye_gaze.py
+python src/tair_files/eye_gaze.py 1
 
 Terminal 5:
 python src/tair_files/handover_gaze_controller.py

@@ -102,7 +102,6 @@ class SawyerHandoverController:
         # self.handGaze()
 
         # Go to handover location
-        self.handover_phase_status_publisher.publish("reach")
         while self.range_sensor_reading > self.range_sensor_threshold:
             print(self.range_sensor_reading)
             # print("not here")
@@ -119,6 +118,7 @@ class SawyerHandoverController:
             # print("done")
             # self.follow_way_points(self.waypoint_handover, self.handover_location)
             #self.go_to_cartesian_pose(self.waypoint_handover)
+            self.handover_phase_status_publisher.publish("reach")
             self.go_to_cartesian_pose(self.handover_location)
 
             # self.faceHandTransitionGaze()
