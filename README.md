@@ -1,5 +1,6 @@
 # Robot Eye Gazes in Human-to-Robot Handovers
 We implement and compare three gaze behaviors on a Sawyer cobot for human-to-robot handovers based on insights from human-human handovers. 
+
 Paper: T. Faibish*, A. Kshirsagar*, G. Hoffman and Y. Edan. “Human Preferences for Robot Eye Gaze in Human-to-Robot Handovers.” International Journal of Social Robotics, 2022
 
 
